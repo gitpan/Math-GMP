@@ -89,9 +89,11 @@ stringify_gmp(n)
   CODE:
     len = mpz_sizeinbase(*n, 10);
     {
-      char buf[len + 2];
+      char *buf;
+      buf = malloc(len + 2);
       mpz_get_str(buf, 10, *n);
       RETVAL = newSVpv(buf, strlen(buf));
+      free(buf);
     }
   OUTPUT:
     RETVAL
