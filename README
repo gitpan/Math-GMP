@@ -43,6 +43,6 @@ BUGS
     needs fixing and testing on various platforms.
 
 AUTHOR
-    Chip Turner <chip@zfx.com>, based on Math::BigInt by Mark Biggar
+    Chip Turner <chip@redhat.com>, based on Math::BigInt by Mark Biggar
     and Ilya Zakharevich.
 

@@ -18,13 +18,12 @@ package Math::GMP;
 # License along with this library; if not, write to the Free
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# You can contact the author at chip@zfx.com, chipt@cpan.org, or by mail:
+# You can contact the author at chip@redhat.com, chipt@cpan.org, or by mail:
 
-# James Turner
-# ZFx Inc.
-# 999 Executive Park Blvd.
-# Suite 301
-# Kingsport, TN 37660
+# Chip Turner
+# Red Hat Inc.
+# 2600 Meridian Park Blvd
+# Durham, NC 27713
 
 use Carp;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
@@ -55,7 +54,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '1.05';
+$VERSION = '1.06';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -237,7 +236,7 @@ needs fixing and testing on various platforms.
 
 =head1 AUTHOR
 
-Chip Turner <chip@zfx.com>, based on Math::BigInt by Mark Biggar and
+Chip Turner <chip@redhat.com>, based on Math::BigInt by Mark Biggar and
 Ilya Zakharevich.
 
 =cut

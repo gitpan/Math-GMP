@@ -22,13 +22,12 @@ You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-You can contact the author at chip@zfx.com, chipt@cpan.org, or by mail:
+You can contact the author at chip@redhat.com, chipt@cpan.org, or by mail:
 
-James Turner
-ZFx Inc.
-999 Executive Park Blvd.
-Suite 301
-Kingsport, TN 37660
+Chip Turner
+Red Hat Inc.
+2600 Meridian Park Blvd
+Durham, NC 27713
 */
 
 static int
@@ -110,9 +109,11 @@ get_str_gmp(n, b)
   CODE:
     len = mpz_sizeinbase(*n, b);
     {
-        char buf[len + 2];
+        char *buf;
+        buf = malloc(len + 2);
         mpz_get_str(buf, b, *n);
         RETVAL = newSVpv(buf, strlen(buf));
+        free(buf);
     }
   OUTPUT:
     RETVAL
