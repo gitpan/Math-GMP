@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::GMP.
 
+2.04  2004-09-28 cturner
+	- added patch from Nicholas Oxhøj for constructing
+	  with different bases (nicholas@oxhoej.dk)
+
 2.03  2002-02-16 Tels
 	- added internal functions gmp_copy, gmp_tstbit, gmp_sqrt
 	- moved test.pl to t/gmppmt, made it use Test and use strict

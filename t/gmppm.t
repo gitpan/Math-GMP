@@ -26,8 +26,9 @@ while (defined($line = shift @data)) {
 
   if ( $args[0] =~ /^i([-+]?\d+)$/ ) {
     $try = "\$x = $1;";
-  }
-  else {
+  } elsif ( $args[0] =~ /^b([-+]?.+),([0-9]+)$/ ) {
+    $try = "\$x = new Math::GMP \"$1\", $2;";
+  } else {
     $try = "\$x = new Math::GMP \"$args[0]\";";
   }
 
@@ -410,6 +411,7 @@ i+35500000:113:33
 &new_from_base
 0xff:255
 0x2395fa:2332154
+babcdefgh,36:808334348993
 &sizeinbase
 +5:i10:1
 +9999999999:i16:9

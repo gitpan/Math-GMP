@@ -71,6 +71,17 @@ new_from_scalar(s)
   OUTPUT:
     RETVAL
 
+mpz_t *
+new_from_scalar_with_base(s, b)
+        char *  s
+        int b
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init_set_str(*RETVAL, s, b);
+  OUTPUT:
+    RETVAL
+
 void
 destroy(n)
 	mpz_t *n

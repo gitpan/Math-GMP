@@ -58,7 +58,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '2.03';
+$VERSION = '2.04';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -96,14 +96,19 @@ sub import {
 
 sub new {
   my $class = shift;
-  my $ival = shift;
+  my $ival = shift || 0;
+  my $base = shift;
 
   $ival =~ s/^\+//;
   $ival =~ s/[ _]//g;
-  $ival = 0 if $ival =~ /[^\d\-xA-Fa-f]/ || !$ival;
+  my $ret;
+  if ($base) {
+    $ret = Math::GMP::new_from_scalar_with_base($ival, $base);
+  } else {
+    $ival = 0 if $ival =~ /[^\d\-xA-Fa-f]/;
 
-
-  my $ret = Math::GMP::new_from_scalar($ival);
+    $ret = Math::GMP::new_from_scalar($ival);
+  }
 
   return $ret;
 }
@@ -298,6 +303,11 @@ functions do exist:
 	$x = Math::GMP->new(123);
 
 Creates a new Math::GMP object from the passed string or scalar.
+
+	$x = Math::GMP->new('abcd', 36);
+
+Creates a new Math::GMP object from the first parameter which should
+be represented in the base specified by the second parameter.
 
 =head2 bfac
 
