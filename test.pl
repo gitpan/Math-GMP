@@ -72,6 +72,10 @@ while (defined($_ = shift @data)) {
        $try .= "Math::GMP::mmod_gmp(\$x, \$y);";
       } elsif ($f eq 'mod_2exp') {
        $try .= "Math::GMP::mod_2exp_gmp(\$x, \$y);";
+      } elsif ($f eq 'legendre') {
+       $try .= "Math::GMP::legendre(\$x, \$y);";
+      } elsif ($f eq 'jacobi') {
+       $try .= "Math::GMP::jacobi(\$x, \$y);";
       } else {
         if ( $args[2] =~ /^i([-+]?\d+)$/ ) {
 	  $try .= "\$z = $1;";
@@ -88,10 +92,10 @@ while (defined($_ = shift @data)) {
     #print ">>>",$try,"<<<\n";
     $ans1 = eval $try;
     if ("$ans1" eq $ans) {	#bug!
-      print "ok $test\n";
+      print "($f) ok $test\n";
     } else {
-      print "not ok $test\n";
-      print "# '$try' expected: '$ans' got: '$ans1'\n";
+      print "($f) not ok $test\n";
+      print "# '$f' expected: '$ans' got: '$ans1'\n";
     }
   }
 } 
@@ -413,3 +417,20 @@ i+35500000:113:33
 &mod_2exp
 +99999999:11111:99999999
 +0:1:0
+&jacobi
++1:15:1
++1:15:1
++2:15:1
++3:15:0
++4:15:1
++5:15:0
++6:15:0
++7:15:-1
++8:15:1
++9:15:0
++10:15:0
++11:15:-1
++12:15:0
++13:15:-1
++14:15:-1
++15:15:0

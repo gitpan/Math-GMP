@@ -54,7 +54,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '1.07';
+$VERSION = '2.0';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -104,8 +104,9 @@ sub new {
   return $ret;
 }
 
-sub DESTROY {
-  Math::GMP::destroy($_[0]);
+BEGIN
+{
+  *DESTROY = \&Math::GMP::destroy;
 }
 
 sub add {
@@ -136,6 +137,14 @@ sub gcd {
 
 sub bgcd {
   return gcd_two(promote(shift), promote(shift));
+}
+
+sub legendre {
+  return gmp_legendre(promote(shift), promote(shift));
+}
+
+sub jacobi {
+  return gmp_jacobi(promote(shift), promote(shift));
 }
 
 sub op_add {

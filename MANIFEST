@@ -7,5 +7,4 @@ GMP.xs
 MANIFEST
 Makefile.PL
 test.pl
-gmp-2.0.2.tar.gz
 typemap

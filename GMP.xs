@@ -311,6 +311,25 @@ cmp_two(m,n)
   OUTPUT:
     RETVAL
 
+int
+gmp_legendre(m, n)
+        mpz_t *         m
+        mpz_t *         n
+
+  CODE:
+    RETVAL = mpz_legendre(*m, *n);
+  OUTPUT:
+    RETVAL
+
+int
+gmp_jacobi(m, n)
+        mpz_t *         m
+        mpz_t *         n
+
+  CODE:
+    RETVAL = mpz_jacobi(*m, *n);
+  OUTPUT:
+    RETVAL
 
 mpz_t *
 pow_two(m,n)
