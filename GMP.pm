@@ -55,7 +55,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -97,7 +97,8 @@ sub new {
 
   $ival =~ s/^\+//;
   $ival =~ s/[ _]//g;
-  $ival = 0 if $ival =~ /[^\d\-]/ || !$ival;
+  $ival = 0 if $ival =~ /[^\d\-xA-Fa-f]/ || !$ival;
+
 
   my $ret = Math::GMP::new_from_scalar($ival);
 

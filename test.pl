@@ -48,8 +48,31 @@ while (defined($_ = shift @data)) {
 	$try .= "\$x % \$y;";
       } elsif ($f eq 'gcd') {
 	$try .= "Math::GMP::gcd(\$x, \$y);";
+      } elsif ($f eq 'new_from_base') {
+        $try .= "\$x;";
+      } elsif ($f eq 'sizeinbase') {
+        $try .= "Math::GMP::sizeinbase_gmp(\$x, \$y);";
+      } elsif ($f eq 'uintify') {
+        $try .= "Math::GMP::uintify_gmp(\$x);";
+      } elsif ($f eq 'add_ui') {
+        $try .= "Math::GMP::add_ui_gmp(\$x, \$y); \$x";
+      } elsif ($f eq 'intify') {
+        $try .= "Math::GMP::intify_gmp(\$x);";
+      } elsif ($f eq 'mul_2exp') {
+        $try .= "Math::GMP::mul_2exp_gmp(\$x, \$y);";
+      } elsif ($f eq 'div_2exp') {
+        $try .= "Math::GMP::div_2exp_gmp(\$x, \$y);";
       } else {
-	warn "Unknown op";
+        if ( $args[2] =~ /^i([-+]?\d+)$/ ) {
+	  $try .= "\$z = $1;";
+        } else {
+	  $try .= "\$z = new Math::GMP \"$args[2]\";";
+        }
+	if ($f eq 'powm') {
+          $try .= "Math::GMP::powm_gmp(\$x, \$y, \$z);";
+	} else {
+	  warn "Unknown op";
+	}
       }
     }
     #print ">>>",$try,"<<<\n";
@@ -268,3 +291,34 @@ i+35500000:113:33
 +3:2:1
 +100:625:25
 +4096:81:1
+&new_from_base
+0xff:255
+0x2395fa:2332154
+&sizeinbase
++5:i10:1
++9999999999:i16:9
+-5000:i2:13
+&uintify
++15:15
++9999999999:1410065407
++99999999999:1215752191
++999999999999:3567587327
+&add_ui
++999999:i1:1000000
++9999999:i1:10000000
++99999999:i1:100000000
+&intify
++999999999:999999999
++9999999999:1410065407
+&mul_2exp
++9999:i9:5119488
++99999:i9:51199488
++0:i1:0
++1:i0:1
+&div_2exp
++999999:i1111:0
++0:i1:0
+&powm
++99999:999999:99:27
++1:1:1:0
++1:0:1:0
