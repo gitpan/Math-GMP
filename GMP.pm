@@ -54,7 +54,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '1.06';
+$VERSION = '1.07';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -134,6 +134,10 @@ sub gcd {
   return gcd_two(promote(shift), promote(shift));
 }
 
+sub bgcd {
+  return gcd_two(promote(shift), promote(shift));
+}
+
 sub op_add {
   my ($n, $m) = @_;
   ($n, $m) = ($m, $n) if $_[2];
@@ -157,6 +161,11 @@ sub op_div {
   ($n, $m) = ($m, $n) if $_[2];
   return div_two(promote($n), promote($m));
 }
+
+sub bdiv {
+  return bdiv_two(promote(shift), promote(shift));
+}
+
 
 sub op_mod {
   my ($n, $m) = @_;

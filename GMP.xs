@@ -268,6 +268,26 @@ div_two(m,n)
     RETVAL
 
 
+void
+bdiv_two(m,n)
+	mpz_t *		m
+	mpz_t *		n
+
+  PREINIT:
+    mpz_t * quo;
+    mpz_t * rem;
+  PPCODE:
+    quo = malloc (sizeof(mpz_t));
+    rem = malloc (sizeof(mpz_t));
+    mpz_init(*quo);
+    mpz_init(*rem);
+    mpz_tdiv_qr(*quo, *rem, *m, *n);
+  EXTEND(SP, 2);
+  PUSHs(sv_setref_pv(sv_newmortal(), "Math::GMP", (void*)quo));
+  PUSHs(sv_setref_pv(sv_newmortal(), "Math::GMP", (void*)rem));
+
+
+
 mpz_t *
 mod_two(m,n)
 	mpz_t *		m
