@@ -58,7 +58,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '2.02';
+$VERSION = '2.03';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -288,6 +288,66 @@ doubles to compute the 250,000 bit number, and thereby overflow it
 into meaninglessness (smaller exponents yield less accurate data due
 to floating point rounding).
 
+=head1 METHODS
+
+Although the non-overload interface is not complete, the following
+functions do exist:
+
+=head2 new
+
+	$x = Math::GMP->new(123);
+
+Creates a new Math::GMP object from the passed string or scalar.
+
+=head2 bfac
+
+	$x = Math::GMP->new(5);
+	$x->bfac();			# 1*2*3*4*5 = 120
+
+Calculates the factorial of $x and modifies $x to contain the result.
+
+=head2 band
+	
+	$x = Math::GMP->new(6);
+	$x->band(3);			# 0b110 & 0b11 = 1
+
+Calculates the bit-wise AND of it's two arguments and modifies the first
+argument.
+
+=head2 bxor
+	
+	$x = Math::GMP->new(6);
+	$x->bxor(3);			# 0b110 & 0b11 = 0b101
+
+Calculates the bit-wise XOR of it's two arguments and modifies the first
+argument.
+
+=head2 bior
+
+	$x = Math::GMP->new(6);
+	$x->bior(3);			# 0b110 & 0b11 = 0b111
+
+Calculates the bit-wise OR of it's two arguments and modifies the first
+argument.
+
+=head2 bgcd
+	
+	$x = Math::GMP->new(6);
+	$x->bgcd(4);			# 6 / 2 = 2, 4 / 2 = 2 => 2
+
+Calculates the Greatest Common Divisior of it's two arguments and returnes
+the result.
+
+=head2 legendre
+
+=head2 jacobi
+
+=head2 fibonacci
+	
+	$x = Math::GMP->fibonacci(16);
+
+Calculates the n'th number in the Fibonacci sequence.
+
 =head1 BUGS
 
 As of version 1.0, Math::GMP is mostly compatible with the old
@@ -319,6 +379,8 @@ L<Math::BigInt::Pari> or L<Math::BigInt::BitVect>.
 =head1 AUTHOR
 
 Chip Turner <chip@redhat.com>, based on the old Math::BigInt by Mark Biggar
-and Ilya Zakharevich.
+and Ilya Zakharevich.  Further extensive work provided by Tels 
+<tels@bloodgate.com>.
+
 
 =cut

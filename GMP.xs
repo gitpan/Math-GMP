@@ -180,6 +180,7 @@ div_2exp_gmp(n, e)
   OUTPUT:
     RETVAL
 
+
 mpz_t *
 powm_gmp(n, exp, mod)
        mpz_t * n
@@ -193,6 +194,7 @@ powm_gmp(n, exp, mod)
   OUTPUT:
     RETVAL
 
+
 mpz_t *
 mmod_gmp(a, b)
        mpz_t * a
@@ -205,6 +207,7 @@ mmod_gmp(a, b)
   OUTPUT:
     RETVAL
 
+
 mpz_t *
 mod_2exp_gmp(in, cnt)
        mpz_t * in
@@ -216,6 +219,7 @@ mod_2exp_gmp(in, cnt)
     mpz_mod_2exp(*RETVAL, *in, cnt);
   OUTPUT:
     RETVAL
+
 
 mpz_t *
 add_two(m,n)
@@ -408,6 +412,7 @@ or_two(m,n)
   OUTPUT:
     RETVAL
 
+
 mpz_t *
 gmp_fac(n)
 	long		n
@@ -418,3 +423,37 @@ gmp_fac(n)
     mpz_fac_ui(*RETVAL, n);
   OUTPUT:
     RETVAL
+
+
+mpz_t *
+gmp_copy(m)
+	mpz_t *		m
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init_set(*RETVAL, *m);
+  OUTPUT:
+    RETVAL
+
+int
+gmp_tstbit(m,n)
+	mpz_t *		m
+	long		n
+
+  CODE:
+    RETVAL = mpz_tstbit(*m,n);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+gmp_sqrt(m)
+	mpz_t *		m
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_sqrt(*RETVAL, *m);
+  OUTPUT:
+    RETVAL
+
+

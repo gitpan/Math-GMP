@@ -1,114 +1,131 @@
 #!./perl
 
-use Math::GMP;
+BEGIN {
+  $| = 1;
+}
 
-$test = 0;
-$| = 1;
+use Math::GMP;
+use Test;
+use strict;
+
+my ($f,$try,$x,$y,$ans,@tests,@data,@args,$ans1,$z,$line);
+
 @data = <DATA>;
 @tests = grep { ! /^&/ } @data;
-print "1..", scalar @tests, "\n";
-while (defined($_ = shift @data)) {
-  chop;
-  if (s/^&//) {
-    $f = $_;
+plan tests => (scalar @tests
+  + 2);				# one extra
+close DATA;
+
+while (defined($line = shift @data)) {
+  chomp $line;
+  if ($line =~ s/^&//) {
+    $f = $line; next;
+  }
+  @args = split(/:/,$line,99);
+  $ans = pop(@args);
+
+  if ( $args[0] =~ /^i([-+]?\d+)$/ ) {
+    $try = "\$x = $1;";
+  }
+  else {
+    $try = "\$x = new Math::GMP \"$args[0]\";";
+  }
+
+  if ($f eq "bnorm") {
+    $try .= "\$x+0;";
+  } elsif ($f eq "fibonacci") {
+    $try .= 'Math::GMP::fibonacci($x);';
+  } elsif ($f eq "bfac") {
+    $try .= '$x->bfac();';
+  } elsif ($f eq "bneg") {
+    $try .= "-\$x;";
+  } elsif ($f eq "babs") {
+    $try .= "abs \$x;";
+  } elsif ($f eq "square_root") {
+    $try .= 'Math::GMP::gmp_sqrt($x);';
+  } elsif ($f eq 'uintify') {
+    $try .= "Math::GMP::uintify_gmp(\$x);";
+  } elsif ($f eq 'intify') {
+    $try .= "Math::GMP::intify_gmp(\$x);";
+  } elsif ($f eq 'new_from_base') {
+    $try .= "\$x;";
   } else {
-    ++$test;
-    @args = split(/:/,$_,99);
-    $ans = pop(@args);
-    if ( $args[0] =~ /^i([-+]?\d+)$/ ) {
-      $try = "\$x = $1;";
+    if ( $args[1] =~ /^i([-+]?\d+)$/ ) {
+      $try .= "\$y = $1;";
     }
     else {
-      $try = "\$x = new Math::GMP \"$args[0]\";";
+      $try .= "\$y = new Math::GMP \"$args[1]\";";
     }
-    if ($f eq "bnorm") {
-      $try .= "\$x+0;";
-    } elsif ($f eq "fibonacci") {
-      $try .= 'Math::GMP::fibonacci($x);';
-    } elsif ($f eq "bfac") {
-      $try .= '$x->bfac();';
-    } elsif ($f eq "bneg") {
-      $try .= "-\$x;";
-    } elsif ($f eq "babs") {
-      $try .= "abs \$x;";
-    } else {
-      if ( $args[1] =~ /^i([-+]?\d+)$/ ) {
-	$try .= "\$y = $1;";
-      }
-      else {
-	$try .= "\$y = new Math::GMP \"$args[1]\";";
-      } 
-      if ($f eq bcmp) {
-	$try .= "\$x <=> \$y;";
-      } elsif ($f eq band) {
-	$try .= "\$x & \$y;";
-      } elsif ($f eq bxor) {
+    if ($f eq 'bcmp') {
+      $try .= "\$x <=> \$y;";
+    } elsif ($f eq 'band') {
+      $try .= "\$x & \$y;";
+    } elsif ($f eq 'bxor') {
 	$try .= "\$x ^ \$y;";
-      } elsif ($f eq bior) {
+    } elsif ($f eq 'bior') {
 	$try .= "\$x | \$y;";
-      } elsif ($f eq badd) {
+    } elsif ($f eq 'badd') {
 	$try .= "\$x + \$y;";
-      } elsif ($f eq bsub) {
+    } elsif ($f eq 'bsub') {
 	$try .= "\$x - \$y;";
-      } elsif ($f eq bmul) {
+    } elsif ($f eq 'bmul') {
 	$try .= "\$x * \$y;";
-      } elsif ($f eq bdiv) {
+    } elsif ($f eq 'bdiv') {
 	$try .= "\$x / \$y;";
-      } elsif ($f eq bmod) {
+    } elsif ($f eq 'bmod') {
 	$try .= "\$x % \$y;";
-      } elsif ($f eq bdiv2a) {
+    } elsif ($f eq 'bdiv2a') {
 	$try .= "((Math::GMP::bdiv(\$x, \$y))[0]);";
-      } elsif ($f eq bdiv2b) {
+    } elsif ($f eq 'bdiv2b') {
 	$try .= "((Math::GMP::bdiv(\$x, \$y))[1]);";
-      } elsif ($f eq 'bgcd') {
-	$try .= "Math::GMP::bgcd(\$x, \$y);";
-      } elsif ($f eq 'gcd') {
+    } elsif ($f eq 'bgcd') {
+      $try .= "Math::GMP::bgcd(\$x, \$y);";
+    } elsif ($f eq 'gcd') {
 	$try .= "Math::GMP::gcd(\$x, \$y);";
-      } elsif ($f eq 'new_from_base') {
-        $try .= "\$x;";
-      } elsif ($f eq 'sizeinbase') {
+    } elsif ($f eq 'sizeinbase') {
         $try .= "Math::GMP::sizeinbase_gmp(\$x, \$y);";
-      } elsif ($f eq 'uintify') {
-        $try .= "Math::GMP::uintify_gmp(\$x);";
-      } elsif ($f eq 'add_ui') {
+    } elsif ($f eq 'add_ui') {
         $try .= "Math::GMP::add_ui_gmp(\$x, \$y); \$x";
-      } elsif ($f eq 'intify') {
-        $try .= "Math::GMP::intify_gmp(\$x);";
-      } elsif ($f eq 'mul_2exp') {
+    } elsif ($f eq 'mul_2exp') {
         $try .= "Math::GMP::mul_2exp_gmp(\$x, \$y);";
-      } elsif ($f eq 'div_2exp') {
+    } elsif ($f eq 'div_2exp') {
         $try .= "Math::GMP::div_2exp_gmp(\$x, \$y);";
-      } elsif ($f eq 'mmod') {
+    } elsif ($f eq 'mmod') {
        $try .= "Math::GMP::mmod_gmp(\$x, \$y);";
-      } elsif ($f eq 'mod_2exp') {
+    } elsif ($f eq 'mod_2exp') {
        $try .= "Math::GMP::mod_2exp_gmp(\$x, \$y);";
-      } elsif ($f eq 'legendre') {
+    } elsif ($f eq 'legendre') {
        $try .= "Math::GMP::legendre(\$x, \$y);";
-      } elsif ($f eq 'jacobi') {
+    } elsif ($f eq 'jacobi') {
        $try .= "Math::GMP::jacobi(\$x, \$y);";
-      } else {
-        if ( $args[2] =~ /^i([-+]?\d+)$/ ) {
+    } elsif ($f eq 'test_bit') {
+       $try .= "Math::GMP::gmp_tstbit(\$x, \$y);";
+    } else {
+      if ( $args[2] =~ /^i([-+]?\d+)$/ ) {
 	  $try .= "\$z = $1;";
-        } else {
+      } else {
 	  $try .= "\$z = new Math::GMP \"$args[2]\";";
-        }
+      }
 	if ($f eq 'powm') {
           $try .= "Math::GMP::powm_gmp(\$x, \$y, \$z);";
-	} else {
+      } else {
 	  warn "Unknown op";
-	}
       }
     }
-    #print ">>>",$try,"<<<\n";
-    $ans1 = eval $try;
-    if ("$ans1" eq $ans) {	#bug!
-      print "($f) ok $test\n";
-    } else {
-      print "($f) not ok $test\n";
-      print "# '$f' expected: '$ans' got: '$ans1'\n";
-    }
   }
-} 
+  $ans1 = eval $try;
+  print "# Tried '$try'\n" if !ok("$ans1",$ans); # need "$ans1" due to bug
+
+}
+
+# some assorted tests for internal functions
+
+$x = Math::GMP->new('123'); $y = Math::GMP::gmp_copy($x);
+ok (ref($y),ref($x)); ok ("$y",'123');
+# doing ok ($y,'123'); (no ""!) will crash. This looks like a nasty bug...
+
+# all done
+ 
 __END__
 &bcmp
 +0:0:0
@@ -473,3 +490,15 @@ i+35500000:113:33
 8:21
 9:34
 10:55
+&test_bit
+10:0:0
+1:0:1
+3:1:1
+3:2:0
+&square_root
+16:4
+1:1
+0:0
+100:10
+101:10
+99:9

@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     'NAME'	=> 'Math::GMP',
-    'VERSION_FROM' => 'GMP.pm', # finds $VERSION
+    'VERSION_FROM' => 'lib/Math/GMP.pm', # finds $VERSION
     'LIBS'	=> ['-lgmp'],   # e.g., '-lm' 
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
 );

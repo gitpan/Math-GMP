@@ -1,10 +1,11 @@
 COPYING.LIB
+INSTALL
 README
 LICENSE
 Changes
-GMP.pm
+lib/Math/GMP.pm
 GMP.xs
 MANIFEST
 Makefile.PL
-test.pl
 typemap
+t/gmppm.t
