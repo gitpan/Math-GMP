@@ -1,5 +1,31 @@
 package Math::GMP;
 
+# Math::GMP, a Perl module for high-speed arbitrary size integer
+# calculations
+# Copyright (C) 2000 James H. Turner
+
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the Free
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# You can contact the author at chip@zfx.com, chipt@cpan.org, or by mail:
+
+# James Turner
+# ZFx Inc.
+# 999 Executive Park Blvd.
+# Suite 301
+# Kingsport, TN 37660
+
 use Carp;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
@@ -29,7 +55,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '0.90';
+$VERSION = '1.0';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -162,40 +188,41 @@ Math::GMP - High speed arbitrary size integer math
 
 =head1 DESCRIPTION
 
-Math::GMP is designed to be a drop-in replacement both for Math::BigInt 
-and for regular integer arithmetic.  Unlike BigInt, though, Math::GMP uses
-the GNU gmp library for all of its calculations, as opposed to straight Perl 
-functions.  This results in a speed increase of anywhere from 5 to 30 times.  
-The downside is that this module requires a C compiler to install -- a small
-tradeoff in most cases.
+Math::GMP is designed to be a drop-in replacement both for
+Math::BigInt and for regular integer arithmetic.  Unlike BigInt,
+though, Math::GMP uses the GNU gmp library for all of its
+calculations, as opposed to straight Perl functions.  This results in
+a speed increase of anywhere from 5 to 30 times.  The downside is that
+this module requires a C compiler to install -- a small tradeoff in
+most cases.
 
-A Math::GMP object can be used just as a normal numeric scalar would be --
-the module overloads the normal arithmetic operators to provide as seamless
-an interface as possible.  However, if you need a perfect interface, you can
-do the following:
+A Math::GMP object can be used just as a normal numeric scalar would
+be -- the module overloads the normal arithmetic operators to provide
+as seamless an interface as possible.  However, if you need a perfect
+interface, you can do the following:
 
   use Math::GMP qw(:constant);
 
   $n = 2 ** (256 * 1024);
   print "n is $n\n";
 
-This would fail without the ':constant' since Perl would use normal integers
-to compute the 250,000 bit number, and thereby truncate it into 
-meaninglessness.
+This would fail without the ':constant' since Perl would use normal
+doubles to compute the 250,000 bit number, and thereby overflow it
+into meaninglessness (smaller exponents yield less accurate data due
+to floating point rounding).
 
 =head1 BUGS
 
-As of version 0.9, Math::GMP is mostly compatible with Math::BigInt.  There
-are some slight incompatibilities, such as output of positive numbers not
-being prefixed by a '+' sign.  It is planned that the 1.0 release be completely
-compatible.
+As of version 1.0, Math::GMP is mostly compatible with Math::BigInt.
+There are some slight incompatibilities, such as output of positive
+numbers not being prefixed by a '+' sign.  This is intentional.
 
-The install process of the gmp library is rather contrived.  This needs fixing
-and testing on various platforms.
+The install process of the gmp library is rather contrived.  This
+needs fixing and testing on various platforms.
 
 =head1 AUTHOR
 
-Chip Turner <chip@zfx.com>, based on Math::BigInt by Mark Biggar and Ilya
-Zakharevich.
+Chip Turner <chip@zfx.com>, based on Math::BigInt by Mark Biggar and
+Ilya Zakharevich.
 
 =cut

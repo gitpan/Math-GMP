@@ -1,0 +1,48 @@
+NAME
+    Math::GMP - High speed arbitrary size integer math
+
+SYNOPSIS
+      use Math::GMP;
+      my $n = new Math::GMP 2;
+
+      $n = $n ** (256*1024);
+      $n = $n - 1;
+      print "n is now $n\n";
+
+DESCRIPTION
+    Math::GMP is designed to be a drop-in replacement both for
+    Math::BigInt and for regular integer arithmetic. Unlike BigInt,
+    though, Math::GMP uses the GNU gmp library for all of its
+    calculations, as opposed to straight Perl functions. This
+    results in a speed increase of anywhere from 5 to 30 times. The
+    downside is that this module requires a C compiler to install --
+    a small tradeoff in most cases.
+
+    A Math::GMP object can be used just as a normal numeric scalar
+    would be -- the module overloads the normal arithmetic operators
+    to provide as seamless an interface as possible. However, if you
+    need a perfect interface, you can do the following:
+
+      use Math::GMP qw(:constant);
+
+      $n = 2 ** (256 * 1024);
+      print "n is $n\n";
+
+    This would fail without the ':constant' since Perl would use
+    normal doubles to compute the 250,000 bit number, and thereby
+    overflow it into meaninglessness (smaller exponents yield less
+    accurate data due to floating point rounding).
+
+BUGS
+    As of version 1.0, Math::GMP is mostly compatible with
+    Math::BigInt. There are some slight incompatibilities, such as
+    output of positive numbers not being prefixed by a '+' sign.
+    This is intentional.
+
+    The install process of the gmp library is rather contrived. This
+    needs fixing and testing on various platforms.
+
+AUTHOR
+    Chip Turner <chip@zfx.com>, based on Math::BigInt by Mark Biggar
+    and Ilya Zakharevich.
+

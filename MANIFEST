@@ -1,4 +1,6 @@
 COPYING.LIB
+README
+LICENSE
 Changes
 GMP.pm
 GMP.xs
