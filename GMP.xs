@@ -96,12 +96,96 @@ stringify_gmp(n)
   OUTPUT:
     RETVAL
 
+
+SV *
+get_str_gmp(n, b)
+       mpz_t * n
+        int b
+
+  PREINIT:
+    int len;
+
+  CODE:
+    len = mpz_sizeinbase(*n, b);
+    {
+        char buf[len + 2];
+        mpz_get_str(buf, b, *n);
+        RETVAL = newSVpv(buf, strlen(buf));
+    }
+  OUTPUT:
+    RETVAL
+
+int
+sizeinbase_gmp(n, b)
+       mpz_t * n
+       int b
+
+  CODE:
+    RETVAL = mpz_sizeinbase(*n, b);
+  OUTPUT:
+    RETVAL
+
+unsigned long
+uintify_gmp(n)
+       mpz_t * n
+
+  CODE:
+    RETVAL = mpz_get_ui(*n);
+  OUTPUT:
+    RETVAL
+
+void
+add_ui_gmp(n, v)
+       mpz_t * n
+       unsigned long v
+
+  CODE:
+    mpz_add_ui(*n, *n, v);
+
+
 long 
 intify_gmp(n)
 	mpz_t *	n
 
   CODE:
     RETVAL = mpz_get_si(*n);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+mul_2exp_gmp(n, e)
+       mpz_t * n
+       unsigned long e
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_mul_2exp(*RETVAL, *n, e);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+div_2exp_gmp(n, e)
+       mpz_t * n
+       unsigned long e
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_div_2exp(*RETVAL, *n, e);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+powm_gmp(n, exp, mod)
+       mpz_t * n
+       mpz_t * exp
+       mpz_t * mod
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_powm(*RETVAL, *n, *exp, *mod);
   OUTPUT:
     RETVAL
 
