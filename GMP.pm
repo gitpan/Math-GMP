@@ -55,7 +55,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '1.0';
+$VERSION = '1.01';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -135,33 +135,47 @@ sub gcd {
 }
 
 sub op_add {
-  return add_two(promote(shift), promote(shift));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return add_two(promote($n), promote($m));
 }
 
 sub op_sub {
-  return sub_two(promote(shift), promote(shift));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return sub_two(promote($n), promote($m));
 }
 
 sub op_mul {
-  return mul_two(promote(shift), promote(shift));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return mul_two(promote($n), promote($m));
 }
 
 sub op_div {
-  return div_two(promote(shift), promote(shift));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return div_two(promote($n), promote($m));
 }
 
 sub op_mod {
-  return mod_two(promote(shift), promote(shift));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return mod_two(promote($n), promote($m));
 }
 
 
 
 sub op_cmp {
-  return cmp_two(stringify(promote(shift)), stringify(promote(shift)));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return cmp_two(stringify(promote($n)), stringify(promote($m)));
 }
 
 sub op_spaceship {
-  my $x = cmp_two(promote(shift), promote(shift));
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  my $x = cmp_two(promote($n), promote($m));
   return $x < 0 ? -1 : $x > 0 ? 1 : 0;
 }
 
