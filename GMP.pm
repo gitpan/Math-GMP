@@ -37,6 +37,10 @@ use overload
 
   '+'   =>   \&op_add,
   '-'   =>   \&op_sub,
+  
+  '&'   =>   \&op_and,
+  '^'   =>   \&op_xor,
+  '|'   =>   \&op_or,
 
   '%'   =>   \&op_mod,
   '**'   =>  \&op_pow,
@@ -54,7 +58,7 @@ require AutoLoader;
 @EXPORT = qw(
 	
 );
-$VERSION = '2.0';
+$VERSION = '2.02';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -203,6 +207,45 @@ sub op_pow {
   return pow_two(promote($m), int($n));
 }
 
+
+sub op_and {
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return and_two(promote($n), promote($m));
+}
+
+sub op_xor {
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return xor_two(promote($n), promote($m));
+}
+
+sub op_or {
+  my ($n, $m) = @_;
+  ($n, $m) = ($m, $n) if $_[2];
+  return or_two(promote($n), promote($m));
+}
+
+sub bior {
+  return or_two(promote(shift), promote(shift));
+}
+
+sub band {
+  return and_two(promote(shift), promote(shift));
+}
+
+sub bxor {
+  return xor_two(promote(shift), promote(shift));
+}
+
+sub bfac {
+  return gmp_fac(int(shift));
+}
+
+sub fibonacci {
+  return gmp_fib(int(shift));
+}
+
 __END__
 
 =head1 NAME
@@ -220,18 +263,20 @@ Math::GMP - High speed arbitrary size integer math
 
 =head1 DESCRIPTION
 
-Math::GMP is designed to be a drop-in replacement both for
+Math::GMP was designed to be a drop-in replacement both for
 Math::BigInt and for regular integer arithmetic.  Unlike BigInt,
 though, Math::GMP uses the GNU gmp library for all of its
-calculations, as opposed to straight Perl functions.  This results in
-a speed increase of anywhere from 5 to 30 times.  The downside is that
-this module requires a C compiler to install -- a small tradeoff in
-most cases.
+calculations, as opposed to straight Perl functions.  This can result
+in speed improvements.
+
+The downside is that this module requires a C compiler to install -- a
+small tradeoff in most cases. Also, this module is not 100% compatible
+to Math::BigInt.
 
 A Math::GMP object can be used just as a normal numeric scalar would
-be -- the module overloads the normal arithmetic operators to provide
-as seamless an interface as possible.  However, if you need a perfect
-interface, you can do the following:
+be -- the module overloads most of the normal arithmetic operators to
+provide as seamless an interface as possible. However, if you need a
+perfect interface, you can do the following:
 
   use Math::GMP qw(:constant);
 
@@ -245,16 +290,35 @@ to floating point rounding).
 
 =head1 BUGS
 
-As of version 1.0, Math::GMP is mostly compatible with Math::BigInt.
+As of version 1.0, Math::GMP is mostly compatible with the old
+Math::BigInt version. It is not a full replacement for the rewritten
+Math::BigInt versions, though. See the L<SEE ALSO section|SEE ALSO>
+on how to achieve to use Math::GMP and retain full compatibility to
+Math::BigInt.
+
 There are some slight incompatibilities, such as output of positive
 numbers not being prefixed by a '+' sign.  This is intentional.
 
-The install process of the gmp library is rather contrived.  This
-needs fixing and testing on various platforms.
+There are also some things missing, and not everything might work as
+expected.
+
+=head1 SEE ALSO
+
+Math::BigInt has a new interface to use a different library than the
+default pure Perl implementation. You can use, for instance, Math::GMP
+with it:
+
+	use Math::BigInt lib => 'GMP';
+
+If Math::GMP is not installed, it will fall back to it's own Perl
+implementation.
+
+See L<Math::BigInt> and L<Math::BigInt::GMP> or
+L<Math::BigInt::Pari> or L<Math::BigInt::BitVect>.
 
 =head1 AUTHOR
 
-Chip Turner <chip@redhat.com>, based on Math::BigInt by Mark Biggar and
-Ilya Zakharevich.
+Chip Turner <chip@redhat.com>, based on the old Math::BigInt by Mark Biggar
+and Ilya Zakharevich.
 
 =cut

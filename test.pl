@@ -23,6 +23,10 @@ while (defined($_ = shift @data)) {
     }
     if ($f eq "bnorm") {
       $try .= "\$x+0;";
+    } elsif ($f eq "fibonacci") {
+      $try .= 'Math::GMP::fibonacci($x);';
+    } elsif ($f eq "bfac") {
+      $try .= '$x->bfac();';
     } elsif ($f eq "bneg") {
       $try .= "-\$x;";
     } elsif ($f eq "babs") {
@@ -36,6 +40,12 @@ while (defined($_ = shift @data)) {
       } 
       if ($f eq bcmp) {
 	$try .= "\$x <=> \$y;";
+      } elsif ($f eq band) {
+	$try .= "\$x & \$y;";
+      } elsif ($f eq bxor) {
+	$try .= "\$x ^ \$y;";
+      } elsif ($f eq bior) {
+	$try .= "\$x | \$y;";
       } elsif ($f eq badd) {
 	$try .= "\$x + \$y;";
       } elsif ($f eq bsub) {
@@ -434,3 +444,32 @@ i+35500000:113:33
 +13:15:-1
 +14:15:-1
 +15:15:0
+&band
+7:3:3
+2:3:2
+4:1:0
+&bxor
+7:3:4
+2:3:1
+4:1:5
+&bior
+7:3:7
+2:3:3
+4:1:5
+&bfac
+1:1
+2:2
+3:6
+4:24
+5:120
+6:720
+&fibonacci
+2:1
+3:2
+4:3
+5:5
+6:8
+7:13
+8:21
+9:34
+10:55

@@ -53,6 +53,7 @@ not_there:
 
 
 MODULE = Math::GMP		PACKAGE = Math::GMP		
+PROTOTYPES: ENABLE
 
 
 double
@@ -358,3 +359,62 @@ gcd_two(m,n)
     RETVAL
 
 
+mpz_t *
+gmp_fib(n)
+	long		n
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_fib_ui(*RETVAL, n);
+  OUTPUT:
+    RETVAL
+
+
+mpz_t *
+and_two(m,n)
+	mpz_t *		m
+	mpz_t *		n
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_and(*RETVAL, *m, *n);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+xor_two(m,n)
+	mpz_t *		m
+	mpz_t *		n
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_xor(*RETVAL, *m, *n);
+  OUTPUT:
+    RETVAL
+
+
+mpz_t *
+or_two(m,n)
+	mpz_t *		m
+	mpz_t *		n
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_ior(*RETVAL, *m, *n);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+gmp_fac(n)
+	long		n
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_fac_ui(*RETVAL, n);
+  OUTPUT:
+    RETVAL
