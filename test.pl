@@ -62,6 +62,10 @@ while (defined($_ = shift @data)) {
         $try .= "Math::GMP::mul_2exp_gmp(\$x, \$y);";
       } elsif ($f eq 'div_2exp') {
         $try .= "Math::GMP::div_2exp_gmp(\$x, \$y);";
+      } elsif ($f eq 'mmod') {
+       $try .= "Math::GMP::mmod_gmp(\$x, \$y);";
+      } elsif ($f eq 'mod_2exp') {
+       $try .= "Math::GMP::mod_2exp_gmp(\$x, \$y);";
       } else {
         if ( $args[2] =~ /^i([-+]?\d+)$/ ) {
 	  $try .= "\$z = $1;";
@@ -322,3 +326,9 @@ i+35500000:113:33
 +99999:999999:99:27
 +1:1:1:0
 +1:0:1:0
+&mmod
++99999:100002:99999
++1:1:0
+&mod_2exp
++99999999:11111:99999999
++0:1:0

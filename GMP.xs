@@ -190,6 +190,30 @@ powm_gmp(n, exp, mod)
     RETVAL
 
 mpz_t *
+mmod_gmp(a, b)
+       mpz_t * a
+       mpz_t * b
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_mmod(*RETVAL, *a, *b);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
+mod_2exp_gmp(in, cnt)
+       mpz_t * in
+       unsigned long cnt
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_mod_2exp(*RETVAL, *in, cnt);
+  OUTPUT:
+    RETVAL
+
+mpz_t *
 add_two(m,n)
 	mpz_t *		m
 	mpz_t *		n
