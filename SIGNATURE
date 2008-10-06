@@ -1,0 +1,41 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: RIPEMD160
+
+SHA1 3b7ad63b40431964fd2ac7af6dfa5657ceea8ef9 .perlcriticrc
+SHA1 b256632dcce76559734ff0a23330d2898b7d3a3b COPYING.LIB
+SHA1 5628246440cc13c477d79062d386a373b454d496 Changes
+SHA1 774d04b18b8f278e75c076f9415d8dd85eeaf3e5 GMP.xs
+SHA1 f0feb3ede8be652142dc71cccfae363e052509b9 INSTALL
+SHA1 505b15d429518390a904f67c0a16b30421b27513 LICENSE
+SHA1 301b1947e31dbe270c16df71aa99ece03c265b68 MANIFEST
+SHA1 4a2159b28844ebc0806319037665a0796defd6d7 MANIFEST.SKIP
+SHA1 177ef649c36695ade400e2c52c0d0c6507791ef7 META.yml
+SHA1 c0aa654ac55bcb62dbbda457c7f4932cdc15e644 Makefile.PL
+SHA1 234ab0c72c48c08d88a33fe08c91787a8788aca3 README
+SHA1 de26506c47988baf0b34f4b76d418fa8f43d5b94 lib/Math/GMP.pm
+SHA1 93aa7e8cae0a361d1e6163dea0281ebff41f3c5f t/00_signature.t
+SHA1 8e1dd95281414579132b797c10c1e9a35d2b6d01 t/01_gmppm.t
+SHA1 2717c0008e46d63fd8f9c218253a379a8d653038 t/99_perlcritic.t
+SHA1 fec007e553785ea32687b62e3976024cbe43986f t/99_pod.t
+SHA1 c56f0fe8e3fdf773b4be2d24f3b27f9be6b1d2fa t/99_spellcheck.t
+SHA1 ace40437561196dc6a08b5e725de35aed0e9902c t/99_yaml.t
+SHA1 9686bf338037ae19ef5dad7cd4dc8e5edbe02722 typemap
+-----BEGIN PGP SIGNATURE-----
+
+iEYEAREDAAYFAkjqKQkACgkQvJuQZxSWSsgO8wCgk63PiSJOckZ/o4rU4suc7El9
+/ygAn0bsR/24rK6EWTah4UQYlpenIXry
+=Wu7M
+-----END PGP SIGNATURE-----

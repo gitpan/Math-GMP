@@ -1,8 +1,18 @@
 Revision history for Perl extension Math::GMP.
 
+2.05  2008-10-06 Greg
+    - New maintainer: Greg Sabino Mullane
+    - Allow tests to work on 64-bit platforms. Patch from Flo.
+      (CPAN bugs #5960, #30327, #27641, #12751, #15459)
+    - Add support for probab_prime function. Patch by shlomif@iglu.org.il.
+      (CPAN bug #6184)
+    - Get smarter about detecting lack of GMP libraries.
+      (CPAN bug #18709)
+    - Add META.yml and some more tests.
+
 2.04  2004-09-28 cturner
 	- added patch from Nicholas Oxhøj for constructing
-	  with different bases (nicholas@oxhoej.dk)
+	  with different bases (nicholas@oxhoej.dk) (CPAN bug #4472)
 
 2.03  2002-02-16 Tels
 	- added internal functions gmp_copy, gmp_tstbit, gmp_sqrt

@@ -347,6 +347,16 @@ gmp_jacobi(m, n)
   OUTPUT:
     RETVAL
 
+int
+gmp_probab_prime(m, reps)
+    mpz_t * m
+    int reps
+
+    CODE:
+        RETVAL = mpz_probab_prime_p(*m, reps);
+    OUTPUT:
+        RETVAL
+
 mpz_t *
 pow_two(m,n)
 	mpz_t *		m
