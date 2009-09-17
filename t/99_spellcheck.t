@@ -1,7 +1,6 @@
 #!perl
 
 ## Spellcheck as much as we can
-## Requires TEST_SPELL to be set
 
 use 5.006;
 use strict;
@@ -11,8 +10,8 @@ select(($|=1,select(STDERR),$|=1)[1]);
 
 my (@testfiles, @perlfiles, @textfiles, @commentfiles, $fh);
 
-if (!$ENV{TEST_SPELL}) {
-	plan skip_all => 'Set the environment variable TEST_SPELL to enable this test';
+if (! $ENV{RELEASE_TESTING}) {
+	plan (skip_all =>  'Test skipped unless environment variable RELEASE_TESTING is set');
 }
 elsif (!eval { require Text::SpellChecker; 1 }) {
 	plan skip_all => 'Could not find Text::SpellChecker';
@@ -50,12 +49,12 @@ while (<DATA>) {
 }
 
 sub spellcheck {
-	my ($desc, $text, $file) = @_;
+	my ($desc, $text, $sfile) = @_;
 	my $check = Text::SpellChecker->new(text => $text);
 	my %badword;
-	my $class = $file =~ /\.pm$/ ? 'Perl' : $file =~ /\.t$/ ? 'Test' : '';
+	my $class = $sfile =~ /\.pm$/ ? 'Perl' : $sfile =~ /\.t$/ ? 'Test' : '';
 	while (my $word = $check->next_word) {
-		next if $okword{Common}{$word} or $okword{$file}{$word} or $okword{$class}{$word};
+		next if $okword{Common}{$word} or $okword{$sfile}{$word} or $okword{$class}{$word};
 		$badword{$word}++;
 	}
 	my $count = keys %badword;
@@ -192,9 +191,11 @@ YAML
 YAMLiciousness
 yml
 Zakharevich
+
 ## Changes
 
 iglu
 il
+libgmp
 probab
 shlomif

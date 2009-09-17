@@ -3,7 +3,7 @@ package Math::GMP;
 # Math::GMP, a Perl module for high-speed arbitrary size integer
 # calculations
 # Copyright (C) 2000-2008 James H. Turner
-# Copyright (C) 2008 Greg Sabino Mullane
+# Copyright (C) 2008-2009 Greg Sabino Mullane
 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
@@ -60,7 +60,7 @@ require AutoLoader;
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-our $VERSION = '2.05';
+our $VERSION = '2.06';
 
 sub AUTOLOAD {
 	# This AUTOLOAD is used to 'autoload' constants from the constant()

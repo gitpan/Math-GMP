@@ -16,5 +16,5 @@ DESCRIPTION
 AUTHOR
     Chip Turner <chip@redhat.com>, based on Math::BigInt by Mark Biggar
     and Ilya Zakharevich.  Further extensive work provided by
-    Tels <tels@bloodgate.com>.
+    Tels <tels@bloodgate.com>. Later non-extensive work by Greg Sabino Mullane.
 

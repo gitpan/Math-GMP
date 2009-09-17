@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::GMP.
 
+2.06  2009-09-17 Greg
+    - Make Makefile.PL more forgiving of gmp library locations. (CPAN bug #46323)
+    - Update link to libgmp.org in INSTALL file (CPAN bug #46324)
+
 2.05  2008-10-06 Greg
     - New maintainer: Greg Sabino Mullane
     - Allow tests to work on 64-bit platforms. Patch from Flo.

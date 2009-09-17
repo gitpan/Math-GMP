@@ -12,7 +12,7 @@ my $output = WriteMakefile
 	 'NO_META'      => 1,
 	 );
 
-if (!exists $output->{EXTRALIBS} or $output->{EXTRALIBS} !~ /lgmp/) {
+if (!exists $output->{EXTRALIBS} or $output->{EXTRALIBS} !~ /gmp/) {
 
 	my $makefile = exists $output->{MAKEFILE}
 		? "\nRemoving ($output->{MAKEFILE})\n" : '';
@@ -29,6 +29,11 @@ Please see the INSTALL file.
 };
 
 	## Do not let make proceed
+	if ($makefile) {
+		print $makefile;
+		unlink $output->{MAKEFILE};
+	}
+
 	unlink $output->{MAKEFILE} if $makefile;
 
 	exit 1;
