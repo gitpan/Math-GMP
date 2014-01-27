@@ -32,24 +32,25 @@ use 5.006;
 use Carp;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $AUTOLOAD);
 
-use overload
-	'""'  =>   \&stringify,
-	'0+'  =>   \&intify,
+use overload (
+	'""'  =>   sub { stringify($_[0]) },
+	'0+'  =>   sub { intify($_[0]) },
 
-	'<=>'  =>  \&op_spaceship,
-	'cmp'  =>  \&op_cmp,
+	'<=>' =>   \&op_spaceship,
+	'=='  =>   \&op_eq,
 
 	'+'   =>   \&op_add,
 	'-'   =>   \&op_sub,
 
-	'&'   =>   \&op_and,
-	'^'   =>   \&op_xor,
-	'|'   =>   \&op_or,
+	'&'   =>   \&band,
+	'^'   =>   \&bxor,
+	'|'   =>   \&bior,
 
 	'%'   =>   \&op_mod,
-	'**'   =>  \&op_pow,
+	'**'  =>   sub { $_[2] ? op_pow($_[1], $_[0]) : op_pow($_[0], $_[1]) },
 	'*'   =>   \&op_mul,
-	'/'   =>   \&op_div;
+	'/'   =>   \&op_div,
+);
 
 require Exporter;
 require DynaLoader;
@@ -60,7 +61,7 @@ require AutoLoader;
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-our $VERSION = '2.06';
+our $VERSION = '2.07';
 
 sub AUTOLOAD {
 	# This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -117,6 +118,8 @@ sub new {
 BEGIN
 	{
 		*DESTROY = \&Math::GMP::destroy;
+		*gcd = \&bgcd;
+		*lcm = \&blcm;
 	}
 
 sub add {
@@ -126,136 +129,6 @@ sub add {
 	add_to_self($ret, shift) while @_;
 
 	return $ret;
-}
-
-sub stringify {
-	return Math::GMP::stringify_gmp($_[0]);
-}
-
-sub intify {
-	return Math::GMP::intify_gmp($_[0]);
-}
-
-sub promote {
-	return $_[0] if ref $_[0] eq 'Math::GMP';
-	return Math::GMP::new_from_scalar($_[0] || 0);
-}
-
-sub gcd {
-	return gcd_two(promote(shift), promote(shift));
-}
-
-sub bgcd {
-	return gcd_two(promote(shift), promote(shift));
-}
-
-sub legendre {
-	return gmp_legendre(promote(shift), promote(shift));
-}
-
-sub jacobi {
-	return gmp_jacobi(promote(shift), promote(shift));
-}
-
-sub probab_prime {
-	my $x = shift;
-	my $reps = shift;
-	return gmp_probab_prime(promote($x), $reps);
-}
-
-sub op_add {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return add_two(promote($n), promote($m));
-}
-
-sub op_sub {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return sub_two(promote($n), promote($m));
-}
-
-sub op_mul {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return mul_two(promote($n), promote($m));
-}
-
-sub op_div {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return div_two(promote($n), promote($m));
-}
-
-sub bdiv {
-	return bdiv_two(promote(shift), promote(shift));
-}
-
-
-sub op_mod {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return mod_two(promote($n), promote($m));
-}
-
-
-
-sub op_cmp {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return cmp_two(stringify(promote($n)), stringify(promote($m)));
-}
-
-sub op_spaceship {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	my $x = cmp_two(promote($n), promote($m));
-	return $x < 0 ? -1 : $x > 0 ? 1 : 0;
-}
-
-sub op_pow {
-	my ($m, $n) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return pow_two(promote($m), int($n));
-}
-
-
-sub op_and {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return and_two(promote($n), promote($m));
-}
-
-sub op_xor {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return xor_two(promote($n), promote($m));
-}
-
-sub op_or {
-	my ($n, $m) = @_;
-	($n, $m) = ($m, $n) if $_[2];
-	return or_two(promote($n), promote($m));
-}
-
-sub bior {
-	return or_two(promote(shift), promote(shift));
-}
-
-sub band {
-	return and_two(promote(shift), promote(shift));
-}
-
-sub bxor {
-	return xor_two(promote(shift), promote(shift));
-}
-
-sub bfac {
-	return gmp_fac(int(shift));
-}
-
-sub fibonacci {
-	return gmp_fib(int(shift));
 }
 
 __END__
@@ -283,7 +156,7 @@ in speed improvements.
 
 The downside is that this module requires a C compiler to install -- a
 small tradeoff in most cases. Also, this module is not 100% compatible
-to Math::BigInt.
+with Math::BigInt.
 
 A Math::GMP object can be used just as a normal numeric scalar would
 be -- the module overloads most of the normal arithmetic operators to
@@ -328,7 +201,7 @@ Calculates the factorial of $x and modifies $x to contain the result.
   $x = Math::GMP->new(6);
   $x->band(3);      # 0b110 & 0b11 = 1
 
-Calculates the bit-wise AND of it's two arguments and modifies the first
+Calculates the bit-wise AND of its two arguments and modifies the first
 argument.
 
 =head2 bxor
@@ -336,7 +209,7 @@ argument.
   $x = Math::GMP->new(6);
   $x->bxor(3);      # 0b110 & 0b11 = 0b101
 
-Calculates the bit-wise XOR of it's two arguments and modifies the first
+Calculates the bit-wise XOR of its two arguments and modifies the first
 argument.
 
 =head2 bior
@@ -344,7 +217,7 @@ argument.
   $x = Math::GMP->new(6);
   $x->bior(3);      # 0b110 & 0b11 = 0b111
 
-Calculates the bit-wise OR of it's two arguments and modifies the first
+Calculates the bit-wise OR of its two arguments and modifies the first
 argument.
 
 =head2 bgcd
@@ -352,11 +225,48 @@ argument.
   $x = Math::GMP->new(6);
   $x->bgcd(4);      # 6 / 2 = 2, 4 / 2 = 2 => 2
 
-Calculates the Greatest Common Divisior of it's two arguments and returns the result.
+Returns the Greatest Common Divisor of the two arguments.
+
+=head2 blcm
+
+  $x = Math::GMP->new(6);
+  $x->blcm(4);      # 6 * 2 = 12, 4 * 3 = 12 => 12
+
+Returns the Least Common Multiple of the two arguments.
+
+=head2 bmodinv
+
+  $x = Math::GMP->new(5);
+  $x->bmodinv(7);   # 5 * 3 == 1 (mod 7) => 3
+
+Returns the modular inverse of $x (mod $y), if defined. This currently
+returns 0 if there is no inverse (but that may change in the future).
+Behaviour is undefined when $y is 0.
+
+=head2 bsqrt
+
+  $x = Math::GMP->new(6);
+  $x->bsqrt();      # int(sqrt(6)) => 2
+
+Returns the integer square root of its argument.
 
 =head2 legendre
 
+  $x = Math::GMP->new(6);
+  $x->legendre(3);
+
+Returns the value of the Legendre symbol ($x/$y). The value is defined only
+when $y is an odd prime; when the value is not defined, this currently
+returns 0 (but that may change in the future).
+
 =head2 jacobi
+
+  $x = Math::GMP->new(6);
+  $x->jacobi(3);
+
+Returns the value of the Jacobi symbol ($x/$y). The value is defined only
+when $y is odd; when the value is not defined, this currently returns 0
+(but that may change in the future).
 
 =head2 fibonacci
 
@@ -369,9 +279,9 @@ Calculates the n'th number in the Fibonacci sequence.
   $x = Math::GMP->new(7);
   $x->probab_prime(10);
 
-Probabilistically Determines if the number is a prime. Argument is the number
+Probabilistically determines if the number is a prime. Argument is the number
 of checks to perform. Returns 0 if the number is definitely not a prime,
-1 if it may be, and 2 if it is definitely is a prime.
+1 if it may be, and 2 if it definitely is a prime.
 
 =head1 BUGS
 
@@ -395,7 +305,7 @@ with it:
 
   use Math::BigInt lib => 'GMP';
 
-If Math::GMP is not installed, it will fall back to it's own Perl
+If Math::GMP is not installed, it will fall back to its own Perl
 implementation.
 
 See L<Math::BigInt> and L<Math::BigInt::GMP> or

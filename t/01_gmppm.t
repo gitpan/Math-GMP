@@ -48,19 +48,19 @@ while (defined($line = shift @data)) {
 		$try .= "abs \$x;";
 	}
 	elsif ($f eq "square_root") {
-		$try .= 'Math::GMP::gmp_sqrt($x);';
+		$try .= 'Math::GMP::bsqrt($x);';
 	}
 	elsif ($f eq 'uintify') {
-		$try .= "Math::GMP::uintify_gmp(\$x);";
+		$try .= "Math::GMP::uintify(\$x);";
 		$ans = pop(@args) if ($Config{longsize} == 4 && scalar @args > 1);
 	}
 	elsif ($f eq 'intify') {
-		$try .= "Math::GMP::intify_gmp(\$x);";
+		$try .= "Math::GMP::intify(\$x);";
 		$ans = pop(@args) if ($Config{longsize} == 4 && scalar @args > 1);
 	}
 	elsif ($f eq 'probab_prime') {
 		my $rets = $args[1];
-		$try .= "Math::GMP::gmp_probab_prime(\$x,$rets);";
+		$try .= "Math::GMP::probab_prime(\$x,$rets);";
 	}
 	elsif ($f eq 'new_from_base') {
 		$try .= "\$x;";
@@ -110,6 +110,12 @@ while (defined($line = shift @data)) {
 		}
 		elsif ($f eq 'gcd') {
 			$try .= "Math::GMP::gcd(\$x, \$y);";
+		}
+		elsif ($f eq 'blcm') {
+			$try .= "Math::GMP::blcm(\$x, \$y);";
+		}
+		elsif ($f eq 'bmodinv') {
+			$try .= "Math::GMP::bmodinv(\$x, \$y);";
 		}
 		elsif ($f eq 'sizeinbase') {
 			$try .= "Math::GMP::sizeinbase_gmp(\$x, \$y);";
@@ -448,6 +454,21 @@ i+35500000:113:33
 +3:2:1
 +100:625:25
 +4096:81:1
+&blcm
++0:0:0
++0:1:0
++1:0:0
++1:1:1
++2:3:6
++3:2:6
++100:625:2500
++75600:5402250:129654000
+&bmodinv
++0:1:0
++1:1:0
++2:3:2
++5:7:3
++999:1000:999
 &new_from_base
 0xff:255
 0x2395fa:2332154

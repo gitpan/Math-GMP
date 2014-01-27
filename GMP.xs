@@ -30,6 +30,8 @@ Red Hat Inc.
 Durham, NC 27713
 */
 
+#define SWAP_GMP if (swap) { mpz_t* t = m; m = n; n = t; }
+
 static int
 not_here(char *s)
 {
@@ -49,6 +51,36 @@ constant(char *name, int arg)
 not_there:
     errno = ENOENT;
     return 0;
+}
+
+mpz_t *
+pv2gmp(char* pv)
+{
+	mpz_t* z;
+	SV* sv;
+
+	z = malloc (sizeof(mpz_t));
+	mpz_init_set_str(*z, pv, 0);
+	sv = sv_newmortal();
+	sv_setref_pv(sv, "Math::GMP", (void*)z);
+	return z;
+}
+
+mpz_t *
+sv2gmp(SV* sv)
+{
+	char* pv;
+
+	/* MAYCHANGE in perlguts.pod - bug in perl */
+	if (SvGMAGICAL(sv)) mg_get(sv);
+
+	if (SvROK(sv) && sv_derived_from(sv, "Math::GMP")) {
+		IV tmp = SvIV((SV*)SvRV(sv));
+		return (mpz_t *)tmp;
+	}
+
+	pv = SvPV_nolen(sv);
+	return pv2gmp(pv);
 }
 
 
@@ -91,7 +123,7 @@ destroy(n)
     free(n);
 
 SV *
-stringify_gmp(n)
+stringify(n)
 	mpz_t *	n
 
   PREINIT:
@@ -141,7 +173,7 @@ sizeinbase_gmp(n, b)
     RETVAL
 
 unsigned long
-uintify_gmp(n)
+uintify(n)
        mpz_t * n
 
   CODE:
@@ -159,7 +191,7 @@ add_ui_gmp(n, v)
 
 
 long 
-intify_gmp(n)
+intify(n)
 	mpz_t *	n
 
   CODE:
@@ -233,9 +265,10 @@ mod_2exp_gmp(in, cnt)
 
 
 mpz_t *
-add_two(m,n)
+op_add(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
     RETVAL = malloc (sizeof(mpz_t));
@@ -246,11 +279,13 @@ add_two(m,n)
 
 
 mpz_t *
-sub_two(m,n)
+op_sub(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
+    SWAP_GMP
     RETVAL = malloc (sizeof(mpz_t));
     mpz_init(*RETVAL);
     mpz_sub(*RETVAL, *m, *n);
@@ -259,9 +294,10 @@ sub_two(m,n)
 
 
 mpz_t *
-mul_two(m,n)
+op_mul(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
     RETVAL = malloc (sizeof(mpz_t));
@@ -272,11 +308,13 @@ mul_two(m,n)
 
 
 mpz_t *
-div_two(m,n)
+op_div(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
+    SWAP_GMP
     RETVAL = malloc (sizeof(mpz_t));
     mpz_init(*RETVAL);
     mpz_div(*RETVAL, *m, *n);
@@ -285,7 +323,7 @@ div_two(m,n)
 
 
 void
-bdiv_two(m,n)
+bdiv(m,n)
 	mpz_t *		m
 	mpz_t *		n
 
@@ -305,30 +343,64 @@ bdiv_two(m,n)
 
 
 mpz_t *
-mod_two(m,n)
+op_mod(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
+    SWAP_GMP
     RETVAL = malloc (sizeof(mpz_t));
     mpz_init(*RETVAL);
     mpz_mod(*RETVAL, *m, *n);
   OUTPUT:
     RETVAL
 
-
-int
-cmp_two(m,n)
+mpz_t *
+bmodinv(m,n)
 	mpz_t *		m
 	mpz_t *		n
 
   CODE:
-    RETVAL = mpz_cmp(*m, *n);
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_invert(*RETVAL, *m, *n);
+  OUTPUT:
+    RETVAL
+
+
+int
+op_spaceship(m,n,swap)
+	mpz_t *		m
+	mpz_t *		n
+	bool		swap
+
+  PREINIT:
+    int i;
+  CODE:
+    i = mpz_cmp(*m, *n);
+    if (swap)
+	i = -i;
+    RETVAL = (i < 0) ? -1 : (i > 0) ? 1 : 0;
   OUTPUT:
     RETVAL
 
 int
-gmp_legendre(m, n)
+op_eq(m,n,swap)
+	mpz_t*		m
+	mpz_t*		n
+	bool		swap
+
+  PREINIT:
+    int i;
+  CODE:
+    i = mpz_cmp(*m, *n);
+    RETVAL = (i == 0) ? 1 : 0;
+  OUTPUT:
+    RETVAL
+
+int
+legendre(m, n)
         mpz_t *         m
         mpz_t *         n
 
@@ -338,7 +410,7 @@ gmp_legendre(m, n)
     RETVAL
 
 int
-gmp_jacobi(m, n)
+jacobi(m, n)
         mpz_t *         m
         mpz_t *         n
 
@@ -348,7 +420,7 @@ gmp_jacobi(m, n)
     RETVAL
 
 int
-gmp_probab_prime(m, reps)
+probab_prime(m, reps)
     mpz_t * m
     int reps
 
@@ -358,7 +430,7 @@ gmp_probab_prime(m, reps)
         RETVAL
 
 mpz_t *
-pow_two(m,n)
+op_pow(m,n)
 	mpz_t *		m
 	long		n
 
@@ -372,7 +444,7 @@ pow_two(m,n)
 
 
 mpz_t *
-gcd_two(m,n)
+bgcd(m,n)
 	mpz_t *		m
 	mpz_t *		n
 
@@ -385,7 +457,20 @@ gcd_two(m,n)
 
 
 mpz_t *
-gmp_fib(n)
+blcm(m,n)
+	mpz_t *		m
+	mpz_t *		n
+
+  CODE:
+    RETVAL = malloc (sizeof(mpz_t));
+    mpz_init(*RETVAL);
+    mpz_lcm(*RETVAL, *m, *n);
+  OUTPUT:
+    RETVAL
+
+
+mpz_t *
+fibonacci(n)
 	long		n
 
   CODE:
@@ -397,9 +482,10 @@ gmp_fib(n)
 
 
 mpz_t *
-and_two(m,n)
+band(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
     RETVAL = malloc (sizeof(mpz_t));
@@ -409,9 +495,10 @@ and_two(m,n)
     RETVAL
 
 mpz_t *
-xor_two(m,n)
+bxor(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
     RETVAL = malloc (sizeof(mpz_t));
@@ -420,11 +507,11 @@ xor_two(m,n)
   OUTPUT:
     RETVAL
 
-
 mpz_t *
-or_two(m,n)
+bior(m,n,swap)
 	mpz_t *		m
 	mpz_t *		n
+	bool		swap
 
   CODE:
     RETVAL = malloc (sizeof(mpz_t));
@@ -433,9 +520,8 @@ or_two(m,n)
   OUTPUT:
     RETVAL
 
-
 mpz_t *
-gmp_fac(n)
+bfac(n)
 	long		n
 
   CODE:
@@ -467,7 +553,7 @@ gmp_tstbit(m,n)
     RETVAL
 
 mpz_t *
-gmp_sqrt(m)
+bsqrt(m)
 	mpz_t *		m
 
   CODE:
